@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.gestion_visite_medicale.Mapper.VisiterDTO;
 import com.example.gestion_visite_medicale.models.Visiter;
 import com.example.gestion_visite_medicale.services.VisiterService;
 
@@ -28,9 +29,9 @@ public class VisiterController {
     private static final Logger logger = LoggerFactory.getLogger(VisiterController.class);
 
     @GetMapping
-    public ResponseEntity<List<Visiter>> getAllVisite() {
+    public ResponseEntity<List<VisiterDTO>> getAllVisite() {
         try {
-            List<Visiter> Visiters = visiterService.getAll();
+            List<VisiterDTO> Visiters = visiterService.getAll();
             if (Visiters.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
@@ -55,7 +56,7 @@ public class VisiterController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findVisiter(@PathVariable int id) {
         try {
-            Visiter Visiter = visiterService.findByVisiterId(id);
+            VisiterDTO Visiter = visiterService.findByVisiterId(id);
             ;
             return ResponseEntity.ok(Visiter);
         } catch (Exception e) {
@@ -66,7 +67,7 @@ public class VisiterController {
     @GetMapping("/all/{id}")
     public ResponseEntity<?> findAllVisiter(@PathVariable int id) {
         try {
-            List<Visiter> Visiter = visiterService.getAllVisityByPatient(id);
+            List<VisiterDTO> Visiter = visiterService.getAllVisityByPatient(id);
             return ResponseEntity.ok(Visiter);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Visiter non trouvé : " + e.getMessage());
@@ -76,7 +77,7 @@ public class VisiterController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateVisiter(@PathVariable int id, @RequestBody Visiter newVisiter) {
         try {
-            Visiter updatedVisiter = visiterService.updateVisiter(id, newVisiter);
+            VisiterDTO updatedVisiter = visiterService.updateVisiter(id, newVisiter);
             return ResponseEntity.ok(updatedVisiter);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erreur de mise à jour : " + e.getMessage());
@@ -87,7 +88,7 @@ public class VisiterController {
     public ResponseEntity<?> deleteVisite(@PathVariable int id) {
         try {
             visiterService.delete(id);
-            return ResponseEntity.ok("Patient supprimé avec succès");
+            return ResponseEntity.ok("Visite supprimé avec succès");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Erreur lors de la suppression : " + e.getMessage());

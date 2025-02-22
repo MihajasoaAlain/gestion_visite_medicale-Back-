@@ -1,9 +1,12 @@
 package com.example.gestion_visite_medicale.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.gestion_visite_medicale.Mapper.VisiterDTO;
+import com.example.gestion_visite_medicale.Mapper.VisiterMapper;
 import com.example.gestion_visite_medicale.models.Patient;
 import com.example.gestion_visite_medicale.models.Visiter;
 import com.example.gestion_visite_medicale.repository.VisiterRepository;
@@ -15,40 +18,46 @@ import lombok.AllArgsConstructor;
 public class VisiterService {
     public VisiterRepository visiterRepository;
     private PatientService patientService;
+    private final VisiterMapper visiterMapper;
 
     public Visiter create(Visiter visiter) {
         return visiterRepository.save(visiter);
     }
 
-    public List<Visiter> getAll() {
-        return visiterRepository.findAll();
+     public List<VisiterDTO> getAll() {
+        return visiterRepository.findAll().stream()
+                .map(visiterMapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    public List<Visiter> getAllVisityByPatient(int codepat) {
+    public List<VisiterDTO> getAllVisityByPatient(int codepat) {
         Patient patientFind = patientService.findByPatientId(codepat);
 
         if (patientFind == null) {
             throw new IllegalArgumentException("Patient non trouvé avec le code : " + codepat);
         }
 
-        return visiterRepository.findByPatient(patientFind);
+        return visiterRepository.findByPatient(patientFind).stream()
+                .map(visiterMapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    public Visiter findByVisiterId(int id) {
-        return visiterRepository.findById(id).orElseThrow(null);
+    public VisiterDTO findByVisiterId(int id) {
+        Visiter visiterResult = visiterRepository.findById(id).orElseThrow(null);
+        return visiterMapper.toDto(visiterResult);
 
     }
 
-    public Visiter updateVisiter(int id, Visiter newVisiter) {
-        Visiter existingVisiter = this.findByVisiterId(id);
+    public VisiterDTO updateVisiter(int id, Visiter newVisiter) {
+        Visiter existingVisiter = visiterMapper.toEntity(this.findByVisiterId(id));
         existingVisiter.setDate(newVisiter.getDate());
-        return visiterRepository.save(existingVisiter);
+        return visiterMapper.toDto(visiterRepository.save(existingVisiter)) ;
 
     }
 
-    public Visiter delete(int id) {
-        Visiter visiter = this.findByVisiterId(id);
+    public VisiterDTO delete(int id) {
+        Visiter visiter = visiterMapper.toEntity(this.findByVisiterId(id));
         visiterRepository.delete(visiter);
-        return visiter;
+        return visiterMapper.toDto(visiter);
     }
 }
