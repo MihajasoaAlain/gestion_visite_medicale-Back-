@@ -18,15 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.gestion_visite_medicale.models.Patient;
 import com.example.gestion_visite_medicale.services.PatientService;
 
+import lombok.AllArgsConstructor;
+
 @RestController
-@RequestMapping("/patients") // Préfixe pour toutes les routes
+@RequestMapping("/patients") 
+@AllArgsConstructor
 public class PatientController {
     private final PatientService patientService;
     private static final Logger logger = LoggerFactory.getLogger(PatientController.class);
 
-    public PatientController(PatientService patientService) {
-        this.patientService = patientService;
-    }
 
     @GetMapping
     public ResponseEntity<List<Patient>> getAllPatients() {
