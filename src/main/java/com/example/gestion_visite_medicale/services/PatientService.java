@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class PatientService {
-    public PatientRepository patientRepository;
+    private final PatientRepository patientRepository;
 
     public Patient create(Patient patient) {
         return patientRepository.save(patient);
@@ -23,8 +23,8 @@ public class PatientService {
     }
 
     public Patient findByPatientId(int codepat) {
-        return patientRepository.findById(codepat).orElseThrow(null);
-
+        return patientRepository.findById(codepat)
+                .orElseThrow(() -> new RuntimeException("Patient non trouvé avec ID : " + codepat));
     }
 
     public Patient delete(int codepat) {
@@ -33,4 +33,12 @@ public class PatientService {
         return patient;
     }
 
+    public Patient update(int codepat, Patient newPatient) {
+        Patient existingPatient = this.findByPatientId(codepat);
+
+        existingPatient.setNom(newPatient.getNom());
+        existingPatient.setPrenom(newPatient.getPrenom()); 
+
+        return patientRepository.save(existingPatient);
+    }
 }
