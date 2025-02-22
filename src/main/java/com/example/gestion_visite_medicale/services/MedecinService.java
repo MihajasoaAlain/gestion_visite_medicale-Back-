@@ -27,6 +27,17 @@ public class MedecinService {
 
     }
 
+    public Medecin update(int codemed, Medecin newMedecin) {
+        return medecinRepository.findById(codemed)
+                .map(existingMedecin -> {
+                    existingMedecin.setNom(newMedecin.getNom());
+                    existingMedecin.setGrade(newMedecin.getGrade());
+                    existingMedecin.setPrenom(newMedecin.getPrenom());
+                    return medecinRepository.save(existingMedecin);
+                })
+                .orElseThrow(() -> new RuntimeException("Médecin non trouvé avec ID : " + codemed));
+    }
+
     public Medecin delete(int codemed) {
         Medecin medecin = this.findByMedecinId(codemed);
         medecinRepository.delete(medecin);
