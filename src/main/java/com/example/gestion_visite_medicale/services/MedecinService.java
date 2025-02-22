@@ -28,14 +28,12 @@ public class MedecinService {
     }
 
     public Medecin update(int codemed, Medecin newMedecin) {
-        return medecinRepository.findById(codemed)
-                .map(existingMedecin -> {
-                    existingMedecin.setNom(newMedecin.getNom());
-                    existingMedecin.setGrade(newMedecin.getGrade());
-                    existingMedecin.setPrenom(newMedecin.getPrenom());
-                    return medecinRepository.save(existingMedecin);
-                })
-                .orElseThrow(() -> new RuntimeException("Médecin non trouvé avec ID : " + codemed));
+        Medecin existingMedecin = this.findByMedecinId(codemed);
+
+        existingMedecin.setNom(newMedecin.getNom());
+        existingMedecin.setGrade(newMedecin.getGrade());
+        existingMedecin.setPrenom(newMedecin.getPrenom());
+        return medecinRepository.save(existingMedecin);
     }
 
     public Medecin delete(int codemed) {

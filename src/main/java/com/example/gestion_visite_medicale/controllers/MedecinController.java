@@ -18,11 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.gestion_visite_medicale.models.Medecin;
 import com.example.gestion_visite_medicale.services.MedecinService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/medecins")
-@CrossOrigin(origins = "*") // Permet l'accès à l'API depuis un autre domaine
+@CrossOrigin(origins = "*")
 public class MedecinController {
 
     private final MedecinService medecinService;
