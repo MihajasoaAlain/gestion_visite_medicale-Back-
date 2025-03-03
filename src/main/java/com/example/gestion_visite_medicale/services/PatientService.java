@@ -1,7 +1,10 @@
 package com.example.gestion_visite_medicale.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.example.gestion_visite_medicale.Mapper.PatientDTO;
+import com.example.gestion_visite_medicale.Mapper.PatientMapper;
 import org.springframework.stereotype.Service;
 
 import com.example.gestion_visite_medicale.models.Patient;
@@ -13,32 +16,41 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PatientService {
     private final PatientRepository patientRepository;
+    private final PatientMapper patientMapper;
 
-    public Patient create(Patient patient) {
-        return patientRepository.save(patient);
+    public PatientDTO create(PatientDTO patientDTO) {
+        Patient patient = patientMapper.toEntity(patientDTO);
+        return patientMapper.toDto(patientRepository.save(patient));
     }
 
-    public List<Patient> getAll() {
-        return patientRepository.findAll();
+    public List<PatientDTO> getAll() {
+        return patientRepository.findAll()
+                .stream()
+                .map(patientMapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    public Patient findByPatientId(int codepat) {
-        return patientRepository.findById(codepat)
+    public PatientDTO findByPatientId(int codepat) {
+        Patient patient = patientRepository.findById(codepat)
                 .orElseThrow(() -> new RuntimeException("Patient non trouvé avec ID : " + codepat));
+        return patientMapper.toDto(patient);
     }
 
-    public Patient delete(int codepat) {
-        Patient patient = this.findByPatientId(codepat);
+    public void delete(int codepat) {
+        Patient patient = patientRepository.findById(codepat)
+                .orElseThrow(() -> new RuntimeException("Patient non trouvé avec ID : " + codepat));
         patientRepository.delete(patient);
-        return patient;
     }
 
-    public Patient update(int codepat, Patient newPatient) {
-        Patient existingPatient = this.findByPatientId(codepat);
+    public PatientDTO update(int codepat, PatientDTO newPatientDTO) {
+        Patient existingPatient = patientRepository.findById(codepat)
+                .orElseThrow(() -> new RuntimeException("Patient non trouvé avec ID : " + codepat));
 
-        existingPatient.setNom(newPatient.getNom());
-        existingPatient.setPrenom(newPatient.getPrenom()); 
+        existingPatient.setNom(newPatientDTO.getNom());
+        existingPatient.setPrenom(newPatientDTO.getPrenom());
+        existingPatient.setSexe(newPatientDTO.getSexe());
+        existingPatient.setAdresse(newPatientDTO.getAdresse());
 
-        return patientRepository.save(existingPatient);
+        return patientMapper.toDto(patientRepository.save(existingPatient));
     }
 }

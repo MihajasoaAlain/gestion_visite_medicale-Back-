@@ -3,6 +3,8 @@ package com.example.gestion_visite_medicale.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.gestion_visite_medicale.Mapper.PatientDTO;
+import com.example.gestion_visite_medicale.Mapper.PatientMapper;
 import org.springframework.stereotype.Service;
 
 import com.example.gestion_visite_medicale.Mapper.VisiterDTO;
@@ -19,6 +21,7 @@ public class VisiterService {
     public VisiterRepository visiterRepository;
     private PatientService patientService;
     private final VisiterMapper visiterMapper;
+    private  final PatientMapper patientMapper;
 
     public Visiter create(Visiter visiter) {
         return visiterRepository.save(visiter);
@@ -31,7 +34,7 @@ public class VisiterService {
     }
 
     public List<VisiterDTO> getAllVisityByPatient(int codepat) {
-        Patient patientFind = patientService.findByPatientId(codepat);
+        Patient patientFind = patientMapper.toEntity(patientService.findByPatientId(codepat));
 
         if (patientFind == null) {
             throw new IllegalArgumentException("Patient non trouvé avec le code : " + codepat);

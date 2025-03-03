@@ -18,6 +18,8 @@ public class Patient {
 private Integer codepat;
 private String nom;
 private String prenom;
+private String sexe;
+private String adresse;
 @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     private List<Visiter> visites;
 

@@ -23,7 +23,7 @@ public class MedecinService {
     }
 
     public Medecin findByMedecinId(int codemed) {
-        return medecinRepository.findById(codemed).orElseThrow(null);
+        return medecinRepository.findById(codemed).orElseThrow();
 
     }
 
