@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.example.gestion_visite_medicale.Mapper.PatientDTO;
 import com.example.gestion_visite_medicale.Mapper.PatientMapper;
+import com.example.gestion_visite_medicale.models.Medecin;
 import org.springframework.stereotype.Service;
 
 import com.example.gestion_visite_medicale.Mapper.VisiterDTO;
@@ -18,16 +19,30 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Service
 public class VisiterService {
+    private final MedecinService medecinService;
     public VisiterRepository visiterRepository;
     private PatientService patientService;
     private final VisiterMapper visiterMapper;
     private  final PatientMapper patientMapper;
 
-    public Visiter create(Visiter visiter) {
-        return visiterRepository.save(visiter);
+    public Visiter create(VisiterDTO visiterDTO) {
+
+        Medecin medecinVisiter = medecinService.findByMedecinId(visiterDTO.getCodemed());
+        System.out.println(medecinVisiter);
+        Patient patientVisiter = patientMapper.toEntity(patientService.findByPatientId(visiterDTO.getCodepat()));
+    System.out.println(patientVisiter);
+                if (medecinVisiter == null || patientVisiter == null) {
+            throw new IllegalArgumentException("Medecin ou Patient non trouvé.");
+        }
+
+        // Convertir le DTO en entité Visiter
+        Visiter visiterEntity = new Visiter(visiterDTO.getId(),medecinVisiter, patientVisiter, visiterDTO.getDate());
+
+        // Sauvegarder l'entité Visiter dans la base de données
+        return visiterRepository.save(visiterEntity);
     }
 
-     public List<VisiterDTO> getAll() {
+    public List<VisiterDTO> getAll() {
         return visiterRepository.findAll().stream()
                 .map(visiterMapper::toDto)
                 .collect(Collectors.toList());

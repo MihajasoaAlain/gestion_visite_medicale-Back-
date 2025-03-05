@@ -23,11 +23,11 @@ public class Visiter {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "codemed")
+    @JoinColumn(name = "codemed",referencedColumnName = "codemed",nullable = false)
     private Medecin medecin;
 
     @ManyToOne
-    @JoinColumn(name = "codepat")
+    @JoinColumn(name = "codepat",referencedColumnName = "codepat",nullable = false)
     private Patient patient;
 
     private LocalDate date;

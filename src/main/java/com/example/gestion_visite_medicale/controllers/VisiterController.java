@@ -37,9 +37,10 @@ public class VisiterController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createVisiter(@RequestBody Visiter Visiter) {
+    public ResponseEntity<?>
+    createVisiter(@RequestBody VisiterDTO visiter) {
         try {
-            Visiter savedVisiter = visiterService.create(Visiter);
+            Visiter savedVisiter = visiterService.create(visiter);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedVisiter);
         } catch (Exception e) {
             logger.error("Erreur lors de l'ajout du Visiter : {}", e.getMessage());
