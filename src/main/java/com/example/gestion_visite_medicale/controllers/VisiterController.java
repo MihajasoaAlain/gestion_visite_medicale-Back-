@@ -82,8 +82,8 @@ public class VisiterController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteVisite(@PathVariable int id) {
         try {
-            visiterService.delete(id);
-            return ResponseEntity.ok("Visite supprimé avec succès");
+            VisiterDTO visiteDelete = visiterService.delete(id);
+            return ResponseEntity.ok("Visite supprimé avec succès"+visiteDelete.getId());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Erreur lors de la suppression : " + e.getMessage());

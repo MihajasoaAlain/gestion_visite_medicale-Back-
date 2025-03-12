@@ -1,5 +1,6 @@
 package com.example.gestion_visite_medicale.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,20 +29,25 @@ public class VisiterService {
     public Visiter create(VisiterDTO visiterDTO) {
 
         Medecin medecinVisiter = medecinService.findByMedecinId(visiterDTO.getCodemed());
-        System.out.println(medecinVisiter);
         Patient patientVisiter = patientMapper.toEntity(patientService.findByPatientId(visiterDTO.getCodepat()));
-    System.out.println(patientVisiter);
-                if (medecinVisiter == null || patientVisiter == null) {
+
+        if (medecinVisiter == null || patientVisiter == null) {
             throw new IllegalArgumentException("Medecin ou Patient non trouvé.");
         }
 
-        // Convertir le DTO en entité Visiter
-        Visiter visiterEntity = new Visiter(visiterDTO.getId(),medecinVisiter, patientVisiter, visiterDTO.getDate());
 
-        // Sauvegarder l'entité Visiter dans la base de données
+        LocalDateTime dateVisite = visiterDTO.getDate();
+
+
+        boolean visiteExiste = visiterRepository.existsByMedecinAndDate(medecinVisiter, dateVisite);
+
+        if (visiteExiste) {
+            throw new IllegalStateException("Le médecin a déjà une visite programmée à ce moment.");
+        }
+
+        Visiter visiterEntity = new Visiter(visiterDTO.getId(), medecinVisiter, patientVisiter, dateVisite);
         return visiterRepository.save(visiterEntity);
     }
-
     public List<VisiterDTO> getAll() {
         return visiterRepository.findAll().stream()
                 .map(visiterMapper::toDto)
