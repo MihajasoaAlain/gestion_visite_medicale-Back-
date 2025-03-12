@@ -1,6 +1,7 @@
 package com.example.gestion_visite_medicale.models;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +31,6 @@ public class Visiter {
     @JoinColumn(name = "codepat",referencedColumnName = "codepat",nullable = false)
     private Patient patient;
 
-    private LocalDate date;
+    private LocalDateTime date;
     
 }
